@@ -108,4 +108,3 @@ def on_release(key):
 
 if __name__ == "__main__":
     main()
-
