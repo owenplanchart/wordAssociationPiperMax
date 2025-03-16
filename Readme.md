@@ -1,3 +1,7 @@
+# wordAssociationPiperMax
+
+speech to text. creates 10 similar words. then speach to text them using Piper models. then sends to Max msp. 
+
 ##  Installing Piper TTS on Macbook Apple Silicon (M1/M2) - YouTube  Tutorial Repo
 
 This repository provides the necessary steps and code snippets for a YouTube tutorial  demonstrating the installation of Piper TTS on a Macbook with Apple Silicon CPU (M1/M2). 
