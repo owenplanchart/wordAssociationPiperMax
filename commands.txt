@@ -1,0 +1,30 @@
+# commands.txt
+# ================================
+# Important commands for the piper project setup
+# ================================
+A lot of this work comes from this chat: https://chatgpt.com/g/g-p-677c45a14c2c8191a7a3ebb1a674ac5d-technology-general/c/67d5f526-6cc8-8006-a31e-78c36401c9d7
+and this video: https://www.youtube.com/watch?v=hQe861JElXc&t=124s&ab_channel=TechGiant
+
+# 1. Set the DYLD_LIBRARY_PATH environment variable for this session.
+# This tells macOS where to find libespeak-ng.dylib.
+export DYLD_LIBRARY_PATH=/Users/owen/Developer/Python/youtubeTTS/tts-comparison/modules/piper/pp/install/lib:$DYLD_LIBRARY_PATH
+
+# 2. Run the piper command to synthesize speech and play the output.
+# This command converts the text into speech, writes it to output.wav, and then plays it.
+echo 'Welcome to the world of speech synthesis!' | piper --model modules/piper/models/en_US-libritts_r-medium.onnx > output.wav && afplay output.wav
+
+# 3.piper --help
+
+# After editing .zshrc, add the following line to have DYLD_LIBRARY_PATH set for every session:
+# export DYLD_LIBRARY_PATH=/Users/owen/Developer/Python/youtubeTTS/tts-comparison/modules/piper/pp/install/lib:$DYLD_LIBRARY_PATH
+
+# 4. Copy the espeak-ng-data folder into the Python package directory.
+# Run this from the "pp" directory (adjust relative paths if needed).
+cp -rp ./install/share/espeak-ng-data ../../../venv/lib/python3.13.2/site-packages/piper_phonemize/espeak-ng-data
+
+# 5. Modify the Shared Library’s rpath with install_name_tool
+You can add the directory where libespeak-ng.dylib resides to the rpath of the Piper shared object (piper_phonemize_cpp). Run the following command from your terminal:
+
+install_name_tool -add_rpath /Users/owen/Developer/Python/youtubeTTS/tts-comparison/modules/piper/pp/install/lib /Users/owen/Developer/Python/youtubeTTS/tts-comparison/venv/lib/python3.13/site-packages/piper_phonemize_cpp.cpython-313-darwin.so
+
+This command tells the dynamic linker to also search in your specified directory when loading libraries for that shared object. After running it, try executing your script again.

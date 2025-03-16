@@ -1,0 +1,85 @@
+# .gitignore for Python + Max/MSP projects
+
+### Python ###
+# Virtual environments
+venv/
+env/
+.benv/
+virtualenv/
+.pyenv/
+.python-version
+.python-version*
+
+# Environment files
+.env
+.venv
+env.bak/
+venv.bak/
+
+# Package installation
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+pip-wheel-metadata/
+
+### Max/MSP ###
+# Max patches and related files
+*.maxpat
+*.maxhelp
+*.mxb
+*.mxf
+*.amxd
+*.maxproj
+*.maxautosave
+/patches/
+
+# Max generated files
+max-autosave.xml
+max-settings.txt
+
+### Editors/IDEs ###
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# PyCharm/IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+### OS ###
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# Piper models
+modules/piper/models/
+!modules/piper/models/README.md  # Keep documentation if needed
+
+# Cached/downloaded models
+*.onnx
+*.onnx.json
+*.tar.gz
