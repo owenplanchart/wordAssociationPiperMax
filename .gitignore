@@ -36,6 +36,7 @@ pip-wheel-metadata/
 *.maxproj
 *.maxautosave
 /patches/
+.wav
 
 # Max generated files
 max-autosave.xml
