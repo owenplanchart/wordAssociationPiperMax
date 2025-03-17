@@ -79,6 +79,7 @@ $RECYCLE.BIN/
 # Piper models
 modules/piper/models/
 !modules/piper/models/README.md  # Keep documentation if needed
+generated_audio
 
 # Cached/downloaded models
 *.onnx
