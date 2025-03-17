@@ -22,17 +22,16 @@ def get_associated_words(word, max_words=10):
             params={"ml": word, "max": max_words}
         )
         response.raise_for_status()
-        return [entry['word'] for entry in response.json()]
+        return [entry['word'] for entry in response.json()][:max_words]  # Ensure max 10 words
     except Exception as e:
         print(f"API Error: {e}")
         return []
 
-def generate_audio(text):
+def generate_audio(word, index):
     """Generate audio file using Piper and return path to file."""
     try:
-        # Create unique filename
-        timestamp = int(time.time() * 1000)
-        filename = f"output_{timestamp}.wav"
+        # Create numbered filename
+        filename = f"output_{index}.wav"
         output_path = os.path.join(OUTPUT_DIR, filename)
 
         # Configure environment for Piper
@@ -48,7 +47,7 @@ def generate_audio(text):
                 env=env,
                 text=True
             )
-            piper_process.communicate(input=text)
+            piper_process.communicate(input=word)
         
         # Update trigger file for Max
         with open(TRIGGER_FILE, "w") as f:
@@ -60,18 +59,19 @@ def generate_audio(text):
         return None
 
 def speak_words(words):
-    """Process and speak associated words."""
+    """Process and speak associated words as individual files."""
     if not words:
         return
         
-    text = " ".join(words)
-    print(f"Generating speech for: {text}")
-    audio_path = generate_audio(text)
-    
-    if audio_path:
-        print(f"Audio ready at: {audio_path}")
-        # Optional: For local testing
-        # subprocess.run(["afplay", audio_path])
+    print(f"Generating {len(words)} audio files:")
+    for index, word in enumerate(words, start=1):
+        print(f"  {index}. {word}")
+        audio_path = generate_audio(word, index)
+        
+        if audio_path:
+            print(f"    Saved to: {audio_path}")
+            # Optional: For local testing
+            # subprocess.run(["afplay", audio_path])
 
 def listen_to_microphone():
     """Listen to microphone and return recognized speech."""
