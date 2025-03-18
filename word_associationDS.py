@@ -4,12 +4,28 @@ import requests
 import subprocess
 import speech_recognition as sr
 from pynput import keyboard
+from pythonosc import udp_client
+
+# Initialize in your __init__ or setup
+UDP_IP = "127.0.0.1"  # IP address of Max MSP
+UDP_PORT = 5004      # Port Max MSP is listening on
+client = udp_client.SimpleUDPClient(UDP_IP, UDP_PORT)
+  # Default localhost
 
 # Configuration
 MODEL_PATH = os.path.abspath("modules/piper/models/en_US-libritts_r-medium.onnx")
 LIBRARY_PATH = "/Users/owen/Developer/Python/myPiperTTS/modules/piper/pp/install/lib"
 OUTPUT_DIR = os.path.abspath("generated_audio")
 TRIGGER_FILE = os.path.abspath("latest_wav.txt")
+
+# OSC
+def notify_max(output_path):
+    try:
+        
+        print(f"Sending to Max MSP: {output_path}")
+        client.send_message("/wav_ready", output_path)  # 
+    except Exception as e:
+        print(f"OSC Error: {e}")
 
 # Ensure output directory exists
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -50,8 +66,7 @@ def generate_audio(word, index):
             piper_process.communicate(input=word)
         
         # Update trigger file for Max
-        with open(TRIGGER_FILE, "w") as f:
-            f.write(output_path)
+        notify_max(output_path) 
             
         return output_path
     except Exception as e:
