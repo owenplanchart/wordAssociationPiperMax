@@ -19,11 +19,11 @@ OUTPUT_DIR = os.path.abspath("generated_audio")
 TRIGGER_FILE = os.path.abspath("latest_wav.txt")
 
 # OSC
-def notify_max(output_path):
+def notify_max(filename):
     try:
         
-        print(f"Sending to Max MSP: {output_path}")
-        client.send_message("/wav_ready", output_path)  # 
+        print(f"Sending to Max MSP: {filename}")
+        client.send_message("/wav_ready", filename)  # 
     except Exception as e:
         print(f"OSC Error: {e}")
 
