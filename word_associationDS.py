@@ -21,11 +21,17 @@ TRIGGER_FILE = os.path.abspath("latest_wav.txt")
 # OSC
 def notify_max(filename):
     try:
-        
         print(f"Sending to Max MSP: {filename}")
         client.send_message("/wav_ready", filename)  # 
     except Exception as e:
         print(f"OSC Error: {e}")
+
+def send_bang():
+    try:
+        client.send_message("/bang", 1)  # Send integer 1 to /bang
+        print("Sent /bang to Max")
+    except Exception as e:
+        print(f"OSC Bang Error: {e}")       
 
 # Ensure output directory exists
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -66,7 +72,7 @@ def generate_audio(word, index):
             piper_process.communicate(input=word)
         
         # Update trigger file for Max
-        notify_max(output_path) 
+        notify_max(filename) 
             
         return output_path
     except Exception as e:
@@ -77,6 +83,9 @@ def speak_words(words):
     """Process and speak associated words as individual files."""
     if not words:
         return
+    
+    # Send single bang via OSC at start of batch
+    send_bang() 
         
     print(f"Generating {len(words)} audio files:")
     for index, word in enumerate(words, start=1):
@@ -148,4 +157,4 @@ class AudioApp:
 
 if __name__ == "__main__":
     app = AudioApp()
-    app.run()
+    app.run
