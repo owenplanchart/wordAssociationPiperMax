@@ -27,6 +27,14 @@ def notify_max(filename):
     except Exception as e:
         print(f"OSC Error: {e}")
 
+def send_bang():
+    try:
+        
+        print(f"Sending to Max MSP: {1}")
+        client.send_message("/bang", 1)  # 
+    except Exception as e:
+        print(f"OSC Error: {e}")       
+
 # Ensure output directory exists
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -77,6 +85,7 @@ def speak_words(words):
     """Process and speak associated words as individual files."""
     if not words:
         return
+    send_bang()  
         
     print(f"Generating {len(words)} audio files:")
     for index, word in enumerate(words, start=1):
