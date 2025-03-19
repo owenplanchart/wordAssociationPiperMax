@@ -6,6 +6,7 @@ import speech_recognition as sr
 from pynput import keyboard
 from pythonosc import udp_client
 
+
 # Initialize in your __init__ or setup
 UDP_IP = "127.0.0.1"  # IP address of Max MSP
 UDP_PORT = 5004      # Port Max MSP is listening on
