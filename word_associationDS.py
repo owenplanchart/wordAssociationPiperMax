@@ -5,6 +5,12 @@ import subprocess
 import speech_recognition as sr
 from pynput import keyboard
 from pythonosc import udp_client
+from piper import PiperVoice
+from concurrent.futures import ThreadPoolExecutor  # Add to imports
+
+# Initialize ONCE at startup
+MODEL_PATH = "/Users/owen/Developer/Python/MyPiperTTS/modules/piper/models/en_US-libritts_r-medium.onnx"
+voice = PiperVoice.load(MODEL_PATH)  # Proper string path
 
 # Initialize in your __init__ or setup
 UDP_IP = "127.0.0.1"  # IP address of Max MSP
@@ -33,11 +39,27 @@ def send_bang():
         print(f"Sending to Max MSP: {1}")
         client.send_message("/bang", 1)  # 
     except Exception as e:
-        print(f"OSC Error: {e}")       
+        print(f"OSC Error: {e}")    
+       
 
 # Ensure output directory exists
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+def generate_audio(word, index):
+    """Generate audio file using Piper Python API"""
+    try:
+        filename = f"output_{index}.wav"
+        output_path = os.path.join(OUTPUT_DIR, filename)
+
+        # Generate audio directly with Piper API
+        with open(output_path, "wb") as f:
+            voice.synthesize(word, f)
+        
+        notify_max(output_path)
+        return output_path
+    except Exception as e:
+        print(f"Audio Generation Error: {e}")
+        return None
 def get_associated_words(word, max_words=10):
     """Fetch word associations using Datamuse API."""
     try:
@@ -86,16 +108,26 @@ def speak_words(words):
     if not words:
         return
     send_bang()  
+
+    with ThreadPoolExecutor(max_workers=4) as executor:  # <- 4 parallel jobs
+        futures = []
+        for index, word in enumerate(words, start=1):
+            print(f"  {index}. {word}")
+            futures.append(executor.submit(generate_audio, word, index))
         
-    print(f"Generating {len(words)} audio files:")
-    for index, word in enumerate(words, start=1):
-        print(f"  {index}. {word}")
-        audio_path = generate_audio(word, index)
+        # Wait for completion (optional)
+        for future in futures:
+            future.result()  # Raise errors if any
         
-        if audio_path:
-            print(f"    Saved to: {audio_path}")
-            # Optional: For local testing
-            # subprocess.run(["afplay", audio_path])
+    # print(f"Generating {len(words)} audio files:")
+    # for index, word in enumerate(words, start=1):
+    #     print(f"  {index}. {word}")
+    #     audio_path = generate_audio(word, index)
+        
+    #     if audio_path:
+    #         print(f"    Saved to: {audio_path}")
+    #         # Optional: For local testing
+    #         # subprocess.run(["afplay", audio_path])
 
 def listen_to_microphone():
     """Listen to microphone and return recognized speech."""
