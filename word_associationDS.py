@@ -97,7 +97,8 @@ def generate_audio(word, index):
         
         # Update trigger file for Max
         notify_max(output_path) 
-            
+        send_bang()
+
         return output_path
     except Exception as e:
         print(f"Audio Generation Error: {e}")
@@ -107,7 +108,7 @@ def speak_words(words):
     """Process and speak associated words as individual files."""
     if not words:
         return
-    send_bang()  
+    # send_bang()  
 
     with ThreadPoolExecutor(max_workers=4) as executor:  # <- 4 parallel jobs
         futures = []
